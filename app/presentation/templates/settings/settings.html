@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="content-section">
+    <div class="center">
+        <div class="container">
+                <div id="configuration-settings"></div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        var settings_form = {{ settings_form | tojson }}
+        var default_settings = {{ default_settings | tojson }}
+    </script>
+    <script type="module"> {% include "settings/settings.js" %}</script>
+{% endblock %}

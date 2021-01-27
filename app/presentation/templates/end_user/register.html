@@ -1,0 +1,22 @@
+{% extends "end_user/base.html" %}
+
+{% block body %}
+    {{ super() }}
+<div class="content-section">
+    <div class="center">
+        <div class="container">
+                <div id="register-form"></div>
+        </div>
+    </div>
+</div>
+{%  endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        var registration_form = {{ config_data.form | tojson }}
+        var default_values = {{ config_data.default | tojson }}
+        var registration_endpoint = {{ registration_endpoint | tojson }}
+    </script>
+    <script type="module"> {% include "end_user/register.js" %}</script>
+{% endblock %}

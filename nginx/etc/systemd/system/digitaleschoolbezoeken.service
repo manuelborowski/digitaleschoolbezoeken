@@ -1,0 +1,13 @@
+[Unit]
+Description=uWSGI instance to serve digitaleschoolbezoeken
+After=network.target
+
+[Service]
+User=aboro
+Group=www-data
+WorkingDirectory=/home/aboro/projects/digitaleschoolbezoeken
+Environment="PATH=/home/aboro/projects/digitaleschoolbezoeken/venv/bin"
+ExecStart=/home/aboro/projects/digitaleschoolbezoeken/venv/bin/python run.py
+
+[Install]
+WantedBy=multi-user.target

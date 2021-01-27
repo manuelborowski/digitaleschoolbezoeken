@@ -1,0 +1,157 @@
+{% extends "end_user/base.html" %}
+
+{% block body %}
+    <div class="content-section">
+        <div class="center">
+            <div class="container">
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                {% if type =='unknown-error' %}
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Foutmelding!</h4>
+                        <h5>Er is een fout opgetreden</h5>
+                        <hr>
+                        {% if message %}
+                            <h5>Bijkomende informatie: </h5>
+                            {{ message }}
+                            <hr>
+                        {% endif %}
+                        <p>Gelieve een bericht te sturen naar <a href="mailto:manuel.borowski@campussintursula.be">manuel.borowski@campussintursula.be</a>
+                        </p>
+                    </div>
+                {% endif %}
+
+                {% if type=='could-not-enter' %}
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Foutmelding!</h4>
+                        <h5>U kan zich nog niet aanmelden. Probeer later opnieuw!</h5>
+                    </div>
+                {% endif %}
+
+                {% if type=='not-opened-yet' %}
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Foutmelding!</h4>
+                        <h5>Onze excuses, de infosessie is nog niet toegankelijk.</h5>
+                        <h5>Probeer opnieuw op de dag en uur dat u hebt gereserveerd.</h5>
+                    </div>
+                {% endif %}
+
+                {% if type =='register-guest-ok' %}
+                    <div class="alert alert-success" role="alert">
+
+                        <h5>Beste</h5>
+                        <br>
+                        <h5>Je hebt jezelf met succes geregistreerd voor de infodag ‘De stap naar het secundair’.</h5>
+                        <h5>We ontmoeten je graag op {{ info.timeslot }}</h5>
+                        <h5>Je krijgt binnen enkele minuten een mail met de nodige informatie.</h5>
+                        <h5>Check uw map ‘ongewenste mail’</h5>
+                        <br>
+                        <h5>Je mag dit venster sluiten.</h5>
+                        <br>
+                        <h5>Tot binnenkort!</h5>
+                        <h5>Scholengemeenschap HeLiKs</h5>
+                    </div>
+                {% endif %}
+
+                {% if type =='register-floor-coworker-ok' %}
+                    <div class="alert alert-success" role="alert">
+                        <h4 class="alert-heading">Registratie/aanpassing is een success</h4>
+                        <h5>U heeft gekozen voor: {{ info.level }}</h5>
+                        <hr>
+                        <h5>Er wordt u nog een mail toegestuurd met extra informatie.</h5>
+                        <h5>U mag dit venster sluiten.</h5>
+                        </p>
+                    </div>
+                {% endif %}
+
+                {% if type =='cancel-ok' %}
+                    <div class="alert alert-success" role="alert">
+                        <h4 class="alert-heading">Reservatie is verwijderd</h4>
+                        <h5>U mag dit venster sluiten.</h5>
+                        </p>
+                    </div>
+                {% endif %}
+
+                {% if type =='could-not-register' %}
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Foutmelding!</h4>
+                        <h5>U kan geen reservatie aanmaken</h5>
+                        <hr>
+                        {% if message %}
+                            <h5>Bijkomende informatie: </h5>
+                            {{ message }}
+                            <hr>
+                        {% endif %}
+                        <p>Gelieve een bericht te sturen naar <a href="mailto:manuel.borowski@campussintursula.be">manuel.borowski@campussintursula.be</a>
+                        </p>
+                    </div>
+                {% endif %}
+
+                {% if type =='could-not-cancel' %}
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Foutmelding!</h4>
+                        <h5>U kan deze reservatie niet verwijderen</h5>
+                        <hr>
+                        {% if message %}
+                            <h5>Bijkomende informatie: </h5>
+                            {{ message }}
+                            <hr>
+                        {% endif %}
+                        <p>Gelieve een bericht te sturen naar <a href="mailto:manuel.borowski@campussintursula.be">manuel.borowski@campussintursula.be</a>
+                        </p>
+                    </div>
+                {% endif %}
+
+                {% if type =='not-enough-visits' %}
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Foutmelding!</h4>
+                        <h5>Onze excuses, het tijdslot {{ info.timeslot }} is reeds volzet.</h5>
+                        <h5>Gelieve een ander tijdslot te kiezen.</h5>
+                        <hr>
+                        <a class="btn btn-success btn-lg" type="submit"
+                           href="{{ url_for('end_user.register', code = info.code) }}">Registreren</a>
+                        </p>
+                    </div>
+                {% endif %}
+
+                {% if type =='no-visit-selected' %}
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Foutmelding!</h4>
+                        <h5>U hebt geen tijdslot geselecteerd, gelieve nogmaals te proberen.</h5>
+                        <hr>
+                        <a class="btn btn-success btn-lg" type="submit"
+                           href="{{ url_for('end_user.register', code = info.code) }}">Registreren</a>
+                        </p>
+                    </div>
+                {% endif %}
+
+                {% if type =='no-floor-selected' %}
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Foutmelding!</h4>
+                        <h5>U hebt geen instanctie geselecteerd, gelieve nogmaals te proberen.</h5>
+                        <hr>
+                        <a class="btn btn-success btn-lg" type="submit"
+                           href="{{ url_for('end_user.register', code = info.code) }}">Registreren</a>
+                        </p>
+                    </div>
+                {% endif %}
+
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+            </div>
+        </div>
+    </div>
+{% endblock %}
