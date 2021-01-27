@@ -17,10 +17,11 @@ flask_app = Flask(__name__, instance_relative_config=True, template_folder='pres
 # V0.1 : start from infodemol 0.7
 # V0.2 : registration ok, ack e-mail is sent
 # V0.3 : update requirements.txt
+# V0.4 : update nginx
 
 @flask_app.context_processor
 def inject_version():
-    return dict(version='V0.3')
+    return dict(version='V0.4')
 
 #enable logging
 LOG_HANDLE = 'DSB'

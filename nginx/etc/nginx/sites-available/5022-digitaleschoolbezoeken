@@ -1,10 +1,10 @@
 server {
-    listen 5021;
+    listen 5022;
     server_name digitaleschoolbezoeken.ict.campussintursula.be;
 
     location / {
         include proxy_params;
-        proxy_pass http://127.0.0.1:5121;
+        proxy_pass http://127.0.0.1:5122;
     }
 
     location /static {
@@ -18,7 +18,7 @@ server {
         proxy_buffering off;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "Upgrade";
-        proxy_pass http://127.0.0.1:5121/socket.io;
+        proxy_pass http://127.0.0.1:5122/socket.io;
     }
 }
 
