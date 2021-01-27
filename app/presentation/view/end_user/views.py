@@ -32,7 +32,7 @@ def dsb_register_save(form_data):
         data = json.loads(form_data)
         if data['cancel-reservation']:
             try:
-                mreservation.delete_registration(data['registration-code'])
+                mdsbregistration.delete_registration(data['registration-code'])
                 return render_template('end_user/messages.html', type='cancel-ok')
             except Exception as e:
                 return render_template('end_user/messages.html', type='could-not-cancel', message=e)

@@ -34,6 +34,8 @@ def dsb_update_timeslots(timeslots, form, key):
                     new['data']['values'].append(new_data)
                 new['label'] = timeslot['label']
                 new['key'] = timeslot['key']
+                if 'default-value' in timeslot:
+                    new['defaultValue'] = timeslot['default-value']
                 component['components'].append(new)
             return
         if 'components' in component:

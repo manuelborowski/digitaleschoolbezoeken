@@ -15,6 +15,19 @@ def add_registration(timeslot, first_name, last_name, email, date_of_birth, code
     return None
 
 
+def delete_registration(code=None):
+    try:
+        registration = DsbRegistration.query
+        if code is not None:
+            registration = registration.filter(DsbRegistration.code == code)
+        registration = registration.first()
+        db.session.delete(registration)
+        db.session.commit()
+    except Exception as e:
+        mutils.raise_error('could not delete registration', e)
+    return None
+
+
 def update_registration(registration, timeslot, first_name, last_name, email, date_of_birth, code):
     try:
         registration.timeslot = timeslot

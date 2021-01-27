@@ -26,12 +26,12 @@ def return_table_row(*cell_values):
 def send_dsb_register_ack(**kwargs):
     try:
         registration = mdsb_registration.get_first_not_sent_registration()
-        email_send_max_retries = msettings.get_configuration_setting('email-send-max-retries')
-        if registration.email_send_retry >= email_send_max_retries:
-            registration.set_enabled(False)
-            return
-        registration.set_email_send_retry(registration.email_send_retry + 1)
         if registration:
+            email_send_max_retries = msettings.get_configuration_setting('email-send-max-retries')
+            if registration.email_send_retry >= email_send_max_retries:
+                registration.set_enabled(False)
+                return
+            registration.set_email_send_retry(registration.email_send_retry + 1)
             flat = registration.flat()
             email_subject = msettings.get_configuration_setting('dsb-register-mail-ack-subject-template')
             email_content = msettings.get_configuration_setting('dsb-register-mail-ack-content-template')

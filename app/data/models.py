@@ -631,8 +631,13 @@ class DsbRegistration(db.Model):
 
     def flat(self, date_format=None):
         return {
-            'full_name': self.full_name,
+            'full_name': self.full_name(),
             'timeslot': self.date_string(),
+            'registration-first-name': self.first_name,
+            'registration-last-name': self.last_name,
+            'registration-email': self.email,
+            'registration-date-of-birth': self.date_of_birth,
+            'registration-code': self.code
         }
 
 

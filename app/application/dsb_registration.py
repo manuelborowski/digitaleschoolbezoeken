@@ -4,12 +4,15 @@ from app.application import utils as mutils
 import json, datetime
 
 
-def get_available_timeslots():
+def get_available_timeslots(default_value=None):
     available_timeslots = []
     try:
+        default_date = mutils.datetime_to_formiodate(default_value) if default_value else None
         configured_timeslot_bases = mdsb_timeslot.get_timeslots()
         all_registrations = mdsb_registration.get_registrations()
         registration_cache = [r.timeslot for r in all_registrations]
+        if default_value:
+            registration_cache.remove(default_value)
         date_label = ''
         value_list = []
         for base in configured_timeslot_bases:
@@ -30,6 +33,8 @@ def get_available_timeslots():
                     'label': time_string,
                     'value': mutils.datetime_to_formiodate(configured_timeslot)
                 })
+                if default_date and  value_list[-1]['value'] == default_date:
+                    available_timeslots[-1]['default-value'] = default_date
         return available_timeslots
     except Exception as e:
         mutils.raise_error('could not get available timeslots', e)
@@ -44,6 +49,12 @@ def get_default_values(code=None):
             timeslots = get_available_timeslots()
             register_template = json.loads(msettings.get_configuration_setting('dsb-register-visitor-template'))
             return register_template, {}, timeslots
+        registration = mdsb_registration.get_first_registration(code=code)
+        timeslots = get_available_timeslots(registration.timeslot)
+        register_template = json.loads(msettings.get_configuration_setting('dsb-register-visitor-template'))
+        default_settings = registration.flat()
+        default_settings['registration-date-of-birth'] = mutils.datetime_to_formiodate(default_settings['registration-date-of-birth'])
+        return register_template, default_settings, timeslots
     except Exception as e:
         mutils.raise_error(f'could not get reservation by code {code}', e)
     return {}, []
@@ -98,3 +109,5 @@ def add_or_update_registration(data, send_ack_email=True):
     return RegisterSaveResult(result=RegisterSaveResult.Result.E_COULD_NOT_REGISTER)
 
 
+def delete_registration(code):
+    mdsb_registration.delete_registration(code)
