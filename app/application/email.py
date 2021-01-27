@@ -64,12 +64,12 @@ def send_dsb_register_ack(**kwargs):
 def send_register_ack(**kwargs):
     try:
         visit = mvisit.get_first_not_sent_registration()
-        email_send_max_retries = msettings.get_configuration_setting('email-send-max-retries')
-        if visit.email_send_retry >= email_send_max_retries:
-            visit.set_enabled(False)
-            return
-        visit.set_email_send_retry(visit.email_send_retry + 1)
         if visit:
+            email_send_max_retries = msettings.get_configuration_setting('email-send-max-retries')
+            if visit.email_send_retry >= email_send_max_retries:
+                visit.set_enabled(False)
+                return
+            visit.set_email_send_retry(visit.email_send_retry + 1)
             flat = visit.flat()
             if visit.end_user.profile == mend_user.Profile.E_GUEST:
                 email_subject = msettings.get_configuration_setting('register-guest-mail-ack-subject-template')

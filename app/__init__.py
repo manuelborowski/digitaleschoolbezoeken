@@ -20,10 +20,11 @@ flask_app = Flask(__name__, instance_relative_config=True, template_folder='pres
 # V0.4 : update nginx
 # V0.5 : update port
 # V0.6 : registration can be updated/deleted
+# V0.7 : small bugfix in sending emails
 
 @flask_app.context_processor
 def inject_version():
-    return dict(version='V0.6')
+    return dict(version='V0.7')
 
 #enable logging
 LOG_HANDLE = 'DSB'
