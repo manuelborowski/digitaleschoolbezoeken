@@ -28,6 +28,14 @@ function form_changed(changed) {
         });
         formio_form.getComponent(key).setValue(val);
     }
+    if (key.includes('select-timeslot-')) {
+        var val = changed.changed.value;
+        var select_components = formio_form.getComponent('panel-select-time-slot').components;
+        select_components.forEach(function (item, index) {
+            item.setValue('');
+        });
+        formio_form.getComponent(key).setValue(val);
+    }
     setTimeout(function (){formio_form.on('change', form_changed)}, 1000);
 }
 

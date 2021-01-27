@@ -1,5 +1,5 @@
 __all__ = ['tables', 'utils', 'multiple_items', 'chat', 'end_user', 'floor', 'socketio', 'settings', 'info_items',
-           'visit', 'reservation', 'email']
+           'visit', 'reservation', 'email', 'dsb_timeslot', 'dsb_registration']
 
 import app.application.socketio
 import app.application.utils
@@ -13,3 +13,6 @@ import app.application.info_items
 import app.application.visit
 import app.application.reservation
 import app.application.email
+import app.application.dsb_timeslot
+import app.application.dsb_registration
+

@@ -97,6 +97,13 @@ default_configuration_settings = {
     'enable-send-email': (False, Settings.SETTING_TYPE.E_BOOL),
 
     'enable-enter-guest': (False, Settings.SETTING_TYPE.E_BOOL),
+
+    'dsb-register-visitor-template': ('', Settings.SETTING_TYPE.E_STRING),
+    'dsb-register-mail-ack-subject-template': ('', Settings.SETTING_TYPE.E_STRING),
+    'dsb-register-mail-ack-content-template': ('', Settings.SETTING_TYPE.E_STRING),
+    'dsb-teams-meeting-url-odd': ('', Settings.SETTING_TYPE.E_STRING),
+    'dsb-teams-meeting-url-even': ('', Settings.SETTING_TYPE.E_STRING),
+
 }
 
 

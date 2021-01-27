@@ -34,9 +34,64 @@ settings_formio = \
         "display": "form",
         "components": [
             {
+                "title": "Digitale schoolbezoeken",
+                "theme": "success",
+                "collapsible": false,
+                "key": "digitaleSchoolbezoeken",
+                "type": "panel",
+                "label": "Panel",
+                "input": false,
+                "tableView": false,
+                "components": [
+                    {
+                        "label": "Registratieformulier",
+                        "autoExpand": false,
+                        "tableView": true,
+                        "key": "dsb-register-visitor-template",
+                        "type": "textarea",
+                        "input": true
+                    },
+                    {
+                        "label": "Registratie bevestigingsmail : onderwerp",
+                        "autoExpand": false,
+                        "tableView": true,
+                        "persistent": false,
+                        "key": "dsb-register-mail-ack-subject-template",
+                        "type": "textarea",
+                        "input": true
+                    },
+                    {
+                        "label": "Registratie bevestigingsmail : inhoud",
+                        "autoExpand": false,
+                        "tableView": true,
+                        "persistent": false,
+                        "key": "dsb-register-mail-ack-content-template",
+                        "type": "textarea",
+                        "input": true
+                    },
+                    {
+                        "label": "Teams-meeting URL EVEN",
+                        "tableView": true,
+                        "persistent": false,
+                        "key": "dsb-teams-meeting-url-even",
+                        "type": "textfield",
+                        "input": true
+                    },
+                    {
+                        "label": "Teams-meeting URL ONEVEN",
+                        "tableView": true,
+                        "persistent": false,
+                        "key": "dsb-teams-meeting-url-odd",
+                        "type": "textfield",
+                        "input": true
+                    }
+                ]
+            },
+            {
                 "title": "Algemeen",
                 "theme": "primary",
                 "collapsible": true,
+                "hidden": true,
                 "key": "algemeen",
                 "type": "panel",
                 "label": "Algemeen",
@@ -59,6 +114,7 @@ settings_formio = \
                 "title": "Stage 2 configuratie",
                 "theme": "primary",
                 "collapsible": true,
+                "hidden": true,
                 "key": "stage2Configuratie",
                 "type": "panel",
                 "label": "Stage 2 configuratie",
@@ -124,6 +180,7 @@ settings_formio = \
                 "title": "Stage 3 configuratie",
                 "theme": "primary",
                 "collapsible": true,
+                "hidden": true,
                 "key": "stage3Configuratie1",
                 "type": "panel",
                 "label": "Stage 3 configuratie",
@@ -189,6 +246,7 @@ settings_formio = \
                 "title": "Tijdslot configuratie",
                 "theme": "primary",
                 "collapsible": true,
+                "hidden": true,
                 "key": "tijdslotConfiguratie",
                 "type": "panel",
                 "label": "Tijdslot configuratie",
@@ -321,9 +379,10 @@ settings_formio = \
                 "title": "VLOER MEDEWERKERS : Registratie template en e-mail",
                 "theme": "primary",
                 "collapsible": true,
+                "hidden": true,
                 "key": "RegistratieTemplate2",
                 "type": "panel",
-                "label": "MEDEWERKERS : Registratie template en e-mail",
+                "label": "VLOER MEDEWERKERS : Registratie template en e-mail",
                 "input": false,
                 "tableView": false,
                 "components": [
@@ -360,9 +419,10 @@ settings_formio = \
                 "title": "SCHOOL MEDEWERKERS : Registratie template en e-mail",
                 "theme": "primary",
                 "collapsible": true,
+                "hidden": true,
                 "key": "RegistratieTemplate3",
                 "type": "panel",
-                "label": "VLOER MEDEWERKERS : Registratie template en e-mail",
+                "label": "SCHOOL MEDEWERKERS : Registratie template en e-mail",
                 "input": false,
                 "tableView": false,
                 "components": [

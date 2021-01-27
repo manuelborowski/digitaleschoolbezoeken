@@ -550,3 +550,89 @@ class TeamsMeeting(db.Model):
     def subscribe_ack_email_sent(cb, opaque):
         TeamsMeeting.ack_email_sent_cb.append((cb, opaque))
         return True
+
+
+class DsbTimeslot(db.Model):
+    __tablename__ = 'dsb_timeslots'
+
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime())
+    length = db.Column(db.Integer, default=10)  # length, in minutes of a single timeslot
+    number = db.Column(db.Integer, default=12)
+    active = db.Column(db.Boolean, default=True)
+    coworker_1 = db.Column(db.String(256), default='')
+    coworker_2 = db.Column(db.String(256), default='')
+
+
+class DsbRegistration(db.Model):
+    __tablename__ = 'dsb_registrations'
+
+    id = db.Column(db.Integer, primary_key=True)
+    timeslot = db.Column(db.DateTime())
+    first_name = db.Column(db.String(256), default='')
+    last_name = db.Column(db.String(256), default='')
+    date_of_birth = db.Column(db.DateTime())
+    email = db.Column(db.String(256), default='')
+
+    enabled = db.Column(db.Boolean, default=True)
+    email_sent = db.Column(db.Boolean, default=True)
+    email_send_retry = db.Column(db.Integer, default=0)
+    code = db.Column(db.String(256), default='')
+
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
+
+    def date_string(self):
+        return self.timeslot.strftime('%Y/%m/%d %H:%M')
+
+    def set_email_sent(self, value):
+        self.email_sent = value
+        db.session.commit()
+        for cb in DsbRegistration.email_sent_cb:
+            cb[0](value, cb[1])
+        return True
+
+    email_sent_cb = []
+
+    @staticmethod
+    def subscribe_email_sent(cb, opaque):
+        DsbRegistration.email_sent_cb.append((cb, opaque))
+        return True
+
+    enabled_cb = []
+
+    def set_enabled(self, value):
+        self.enabled = value
+        db.session.commit()
+        for cb in DsbRegistration.enabled_cb:
+            cb[0](value, cb[1])
+        return True
+
+    @staticmethod
+    def subscribe_eanbled(cb, opaque):
+        DsbRegistration.enabled_cb.append((cb, opaque))
+        return True
+
+    email_send_retry_cb = []
+
+    def set_email_send_retry(self, value):
+        self.email_send_retry= value
+        db.session.commit()
+        for cb in DsbRegistration.email_send_retry_cb:
+            cb[0](value, cb[1])
+        return True
+
+    @staticmethod
+    def subscribe_ack_email_send_retry(cb, opaque):
+        DsbRegistration.email_send_retry_cb.append((cb, opaque))
+        return True
+
+
+
+    def flat(self, date_format=None):
+        return {
+            'full_name': self.full_name,
+            'timeslot': self.date_string(),
+        }
+
+

@@ -135,6 +135,44 @@
                     </div>
                 {% endif %}
 
+                {% if type =='dsb-register-ok' %}
+                    <div class="alert alert-success" role="alert">
+
+                        <h5>Beste</h5>
+                        <br>
+                        <h5>Je hebt jezelf met succes geregistreerd voor het digitale schoolbezoek.</h5>
+                        <h5>We ontmoeten je graag op {{ info.timeslot }}</h5>
+                        <h5>Je krijgt binnen enkele minuten een mail met de nodige informatie.</h5>
+                        <h5>Check uw map ‘ongewenste mail’</h5>
+                        <br>
+                        <h5>Je mag dit venster sluiten.</h5>
+                        <br>
+                        <h5>Tot binnenkort!</h5>
+                    </div>
+                {% endif %}
+
+                {% if type =='dsb-no-timeslot-selected' %}
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Foutmelding!</h4>
+                        <h5>U hebt geen moment geselecteerd, gelieve nogmaals te proberen.</h5>
+                        <hr>
+                        <a class="btn btn-success btn-lg" type="submit"
+                           href="{{ url_for('end_user.dsb_register', code = info.code) }}">Registreren</a>
+                        </p>
+                    </div>
+                {% endif %}
+
+                {% if type =='dsb-timeslot-already-selected' %}
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Foutmelding!</h4>
+                        <h5>Onze excuses, dit moment is reeds geselecteerd, gelieve nogmaals te proberen.</h5>
+                        <hr>
+                        <a class="btn btn-success btn-lg" type="submit"
+                           href="{{ url_for('end_user.dsb_register', code = info.code) }}">Registreren</a>
+                        </p>
+                    </div>
+                {% endif %}
+
                 {% if type =='no-floor-selected' %}
                     <div class="alert alert-danger" role="alert">
                         <h4 class="alert-heading">Foutmelding!</h4>
