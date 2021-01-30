@@ -79,7 +79,7 @@ def registration_save(form_data):
                 flash_plus('Kon de reservatie niet verwijderen', e)
         else:
             try:
-                ret = mdsb_registration.add_or_update_registration(data, send_ack_email=False)
+                ret = mdsb_registration.add_or_update_registration(data, update_by_end_user=False)
                 if ret.result == ret.Result.E_NO_TIMESLOT_SELECTED:
                     flash_plus('Geen tijdslot geselecteerd')
                 if ret.result == ret.Result.E_TIMESLOT_ALREADY_SELECTED:

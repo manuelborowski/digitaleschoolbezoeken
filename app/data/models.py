@@ -12,10 +12,8 @@ def datetime_to_dutch_date_string(date):
     return babel.dates.format_date(date, locale='nl')
 
 
-
 def datetime_to_dutch_datetime_string(date):
     return babel.dates.format_datetime(date, locale='nl')
-
 
 
 class User(UserMixin, db.Model):
@@ -165,7 +163,6 @@ class EndUser(db.Model):
         self.visits.append(visit)
         db.session.commit()
 
-
     def profile_to_dutch(self):
         if self.profile == EndUser.Profile.E_GUEST:
             return 'Bezoeker'
@@ -257,7 +254,7 @@ class Visit(db.Model):
     email_send_retry_cb = []
 
     def set_email_send_retry(self, value):
-        self.email_send_retry= value
+        self.email_send_retry = value
         db.session.commit()
         for cb in Visit.email_send_retry_cb:
             cb[0](value, cb[1])
@@ -286,8 +283,6 @@ class Visit(db.Model):
     def subscribe_enabled(cb, opaque):
         Visit.enabled_cb.append((cb, opaque))
         return True
-
-
 
 
 class Room(db.Model):
@@ -573,6 +568,12 @@ class DsbTimeslot(db.Model):
     coworker_1 = db.Column(db.String(256), default='')
     coworker_2 = db.Column(db.String(256), default='')
 
+    def ret_dict(self):
+        ret = {'id': self.id, 'DT_RowId': self.id, 'date_1': datetime_to_dutch_datetime_string(self.date),
+               'date_2': datetime_to_dutch_datetime_string(self.date + datetime.timedelta(minutes=self.length)),
+               'coworker_1': self.coworker_1, 'coworker_2': self.coworker_2}
+        return ret
+
 
 class DsbRegistration(db.Model):
     __tablename__ = 'dsb_registrations'
@@ -637,26 +638,10 @@ class DsbRegistration(db.Model):
         DsbRegistration.enabled_cb.append((cb, opaque))
         return True
 
-    email_send_retry_cb = []
-
-    def set_email_send_retry(self, value):
-        self.email_send_retry= value
-        db.session.commit()
-        for cb in DsbRegistration.email_send_retry_cb:
-            cb[0](value, cb[1])
-        return True
-
     @staticmethod
     def subscribe_email_send_retry(cb, opaque):
         DsbRegistration.email_send_retry_cb.append((cb, opaque))
         return True
-
-    def ret_dict(self):
-        flat = self.flat()
-        flat['date_of_birth'] = datetime_to_dutch_date_string(self.date_of_birth)
-        flat.update({'id': self.id, 'DT_RowId': self.id})
-        return flat
-
 
     def flat(self):
         return {
@@ -672,4 +657,8 @@ class DsbRegistration(db.Model):
             'email-send-retry': self.email_send_retry
         }
 
-
+    def ret_dict(self):
+        flat = self.flat()
+        flat['date_of_birth'] = datetime_to_dutch_date_string(self.date_of_birth)
+        flat.update({'id': self.id, 'DT_RowId': self.id})
+        return flat

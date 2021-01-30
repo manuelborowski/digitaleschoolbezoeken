@@ -34,7 +34,7 @@ def delete_registration(code=None, id_list=None):
     return None
 
 
-def update_registration(registration, timeslot, first_name, last_name, email, date_of_birth, code):
+def update_registration(registration, timeslot, first_name, last_name, email, date_of_birth, code, email_send_retry):
     try:
         registration.timeslot = timeslot
         registration.first_name = first_name
@@ -42,6 +42,7 @@ def update_registration(registration, timeslot, first_name, last_name, email, da
         registration.email = email
         registration.date_of_birth = date_of_birth
         registration.code = code
+        registration.email_send_retry = email_send_retry
         log.info(f'Registration updated: {timeslot}')
         db.session.commit()
         return registration

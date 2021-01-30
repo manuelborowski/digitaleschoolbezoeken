@@ -39,6 +39,7 @@ def send_dsb_register_ack(**kwargs):
             email_subject = email_subject.replace('{{TAG-TIMESLOT}}', flat['timeslot'])
 
             email_content = email_content.replace('{{TAG-TIMESLOT}}', flat['timeslot'])
+            email_content = email_content.replace('{{TAG-FULL-NAME}}', flat['full_name'])
             base_url = msettings.get_configuration_setting("base-url")
             even_timeslot = (int((registration.timeslot.minute) / 10) % 2) == 0
             if even_timeslot:

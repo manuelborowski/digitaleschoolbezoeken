@@ -74,18 +74,21 @@ def get_default_values(code=None, id=None):
                 # guest makes an update
                 registration = mdsb_registration.get_first_registration(code=code)
                 if not registration:
-                    return RegisterSaveResult(result=RegisterSaveResult.Result.E_NO_REGISTRATION_FOUND, registration=register_endpoint)
+                    return RegisterSaveResult(result=RegisterSaveResult.Result.E_NO_REGISTRATION_FOUND,
+                                              registration=register_endpoint)
         elif id is not None:
             # administrator makes an update
             registration = mdsb_registration.get_first_registration(id=id)
             if not registration:
-                return RegisterSaveResult(result=RegisterSaveResult.Result.E_NO_REGISTRATION_FOUND,registration=register_endpoint)
+                return RegisterSaveResult(result=RegisterSaveResult.Result.E_NO_REGISTRATION_FOUND,
+                                          registration=register_endpoint)
         else:
             return RegisterSaveResult(result=RegisterSaveResult.Result.E_COULD_NOT_REGISTER)
         timeslots = get_available_timeslots(registration.timeslot)
         register_template = json.loads(msettings.get_configuration_setting('dsb-register-visitor-template'))
         default_settings = registration.flat()
-        default_settings['registration-date-of-birth'] = mutils.datetime_to_formiodate(default_settings['registration-date-of-birth'])
+        default_settings['registration-date-of-birth'] = mutils.datetime_to_formiodate(
+            default_settings['registration-date-of-birth'])
         ret = {
             'template': register_template,
             'default': default_settings,
@@ -96,8 +99,7 @@ def get_default_values(code=None, id=None):
     return RegisterSaveResult(result=RegisterSaveResult.Result.E_COULD_NOT_REGISTER)
 
 
-
-def add_or_update_registration(data, send_ack_email=True):
+def add_or_update_registration(data, update_by_end_user=True):
     try:
         available_timeslots = get_available_timeslots()
         timeslot_found = False
@@ -110,25 +112,35 @@ def add_or_update_registration(data, send_ack_email=True):
         registration_info = {'code': flask_app.config['REGISTER_DSB_GUEST']}
 
         if not timeslot_found:
-            return RegisterSaveResult(result=RegisterSaveResult.Result.E_NO_TIMESLOT_SELECTED, registration=registration_info)
+            return RegisterSaveResult(result=RegisterSaveResult.Result.E_NO_TIMESLOT_SELECTED,
+                                      registration=registration_info)
 
         code = data['registration-code']
         registration = mdsb_registration.get_first_registration(code=code) if code != '' else None
         registration_from_timeslot = mdsb_registration.get_first_registration(timeslot=timeslot, enabled=True)
         if registration:
             if registration_from_timeslot and registration is not registration_from_timeslot:
-                return RegisterSaveResult(result=RegisterSaveResult.Result.E_TIMESLOT_ALREADY_SELECTED, registration=registration_info)
+                return RegisterSaveResult(result=RegisterSaveResult.Result.E_TIMESLOT_ALREADY_SELECTED,
+                                          registration=registration_info)
         elif registration_from_timeslot:
-            return RegisterSaveResult(result=RegisterSaveResult.Result.E_TIMESLOT_ALREADY_SELECTED, registration=registration_info)
+            return RegisterSaveResult(result=RegisterSaveResult.Result.E_TIMESLOT_ALREADY_SELECTED,
+                                      registration=registration_info)
 
         date_of_birth = mutils.formiodate_to_datetime(data['registration-date-of-birth'])
         if registration:
-            registration = mdsb_registration.update_registration(registration, timeslot, data['registration-first-name'], data['registration-last-name'], data['registration-email'], date_of_birth, code)
+            send_retry = 0 if update_by_end_user else registration.email_send_retry
+            registration = mdsb_registration.update_registration(registration, timeslot,
+                                                                 data['registration-first-name'],
+                                                                 data['registration-last-name'],
+                                                                 data['registration-email'], date_of_birth, code,
+                                                                 send_retry)
         else:
             code = mutils.create_random_string()
-            registration = mdsb_registration.add_registration(timeslot, data['registration-first-name'], data['registration-last-name'], data['registration-email'], date_of_birth, code)
+            registration = mdsb_registration.add_registration(timeslot, data['registration-first-name'],
+                                                              data['registration-last-name'],
+                                                              data['registration-email'], date_of_birth, code)
         if registration:
-            if send_ack_email:
+            if update_by_end_user:
                 registration.set_email_sent(False)
             return RegisterSaveResult(result=RegisterSaveResult.Result.E_OK, registration=registration.flat())
         return RegisterSaveResult(result=RegisterSaveResult.Result.E_COULD_NOT_REGISTER)
@@ -179,5 +191,3 @@ def subscribe_email_send_retry(cb, opaque):
 
 def subscribe_enabled(cb, opaque):
     return mdsb_registration.subscribe_enabled(cb, opaque)
-
-

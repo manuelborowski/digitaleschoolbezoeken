@@ -26,8 +26,13 @@
             {% if current_user.is_authenticated %}
                 <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('dsb_timeslot.show') }}">Tijdsloten</a>
+                </li>
+                {% if  current_user.is_at_least_supervisor %}
+                <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('dsb_registration.show') }}">Registraties</a>
                 </li>
+                {% endif %}
                 {% if  current_user.is_at_least_admin %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('user.show') }}">Gebruikers</a>

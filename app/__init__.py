@@ -22,10 +22,11 @@ flask_app = Flask(__name__, instance_relative_config=True, template_folder='pres
 # V0.6 : registration can be updated/deleted
 # V0.7 : small bugfix in sending emails
 # V0.8 : overview of registrations is ok
+# V0.9 : overview of timeslots
 
 @flask_app.context_processor
 def inject_version():
-    return dict(version='V0.8')
+    return dict(version='V0.9')
 
 #enable logging
 LOG_HANDLE = 'DSB'
@@ -134,13 +135,14 @@ else:
             return func(*args, **kwargs)
         return decorated_view
 
-    from app.presentation.view import auth, user, settings, end_user, reservation, meeting, dsb_registration
+    from app.presentation.view import auth, user, settings, end_user, reservation, meeting, dsb_registration, dsb_timeslot
     flask_app.register_blueprint(auth.auth)
     flask_app.register_blueprint(user.user)
     flask_app.register_blueprint(end_user.end_user)
     flask_app.register_blueprint(settings.settings)
     flask_app.register_blueprint(reservation.reservation)
     flask_app.register_blueprint(dsb_registration.dsb_registration)
+    flask_app.register_blueprint(dsb_timeslot.dsb_timeslot)
     flask_app.register_blueprint(meeting.meeting)
 
     @flask_app.errorhandler(403)
