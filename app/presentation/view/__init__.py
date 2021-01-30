@@ -7,14 +7,13 @@ true = True
 null = None
 
 
-def dsb_prepare_registration_form(registration_code):
-    template, default_values, timeslots = mdsb_registration.get_default_values(registration_code)
-    if timeslots:
-        dsb_update_timeslots(timeslots, template, 'panel-select-time-slot')
-    return {
-        'default': default_values,
-        'form': template
-    }
+def dsb_prepare_registration_form(registration_code=None, id=None):
+    # template, default_values, timeslots = mdsb_registration.get_default_values(registration_code, id)
+    ret = mdsb_registration.get_default_values(registration_code, id)
+    if ret.result == ret.Result.E_OK:
+        if ret.registration['timeslots']:
+            dsb_update_timeslots(ret.registration['timeslots'], ret.registration['template'], 'panel-select-time-slot')
+    return ret
 
 
 def dsb_update_timeslots(timeslots, form, key):

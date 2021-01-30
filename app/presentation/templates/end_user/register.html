@@ -14,7 +14,7 @@
 {% block scripts %}
     {{ super() }}
     <script>
-        var registration_form = {{ config_data.form | tojson }}
+        var registration_form = {{ config_data.template | tojson }}
         var default_values = {{ config_data.default | tojson }}
         var registration_endpoint = {{ registration_endpoint | tojson }}
     </script>

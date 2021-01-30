@@ -2,10 +2,20 @@ from app import log, db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import UniqueConstraint
-import inspect, datetime
+import inspect, datetime, babel
 from flask import url_for
 from sqlalchemy.sql import func
 from sqlalchemy.orm import column_property
+
+
+def datetime_to_dutch_date_string(date):
+    return babel.dates.format_date(date, locale='nl')
+
+
+
+def datetime_to_dutch_datetime_string(date):
+    return babel.dates.format_datetime(date, locale='nl')
+
 
 
 class User(UserMixin, db.Model):
@@ -582,13 +592,27 @@ class DsbRegistration(db.Model):
     def full_name(self):
         return f'{self.first_name} {self.last_name}'
 
-    def date_string(self):
+    def timeslot_string(self):
         return self.timeslot.strftime('%Y/%m/%d %H:%M')
 
     def set_email_sent(self, value):
         self.email_sent = value
         db.session.commit()
         for cb in DsbRegistration.email_sent_cb:
+            cb[0](value, cb[1])
+        return True
+
+    email_send_retry_cb = []
+
+    @staticmethod
+    def subscribe_email_send_retry(cb, opaque):
+        DsbRegistration.email_send_retry_cb.append((cb, opaque))
+        return True
+
+    def set_email_send_retry(self, value):
+        self.email_send_retry = value
+        db.session.commit()
+        for cb in DsbRegistration.email_send_retry_cb:
             cb[0](value, cb[1])
         return True
 
@@ -609,7 +633,7 @@ class DsbRegistration(db.Model):
         return True
 
     @staticmethod
-    def subscribe_eanbled(cb, opaque):
+    def subscribe_enabled(cb, opaque):
         DsbRegistration.enabled_cb.append((cb, opaque))
         return True
 
@@ -623,21 +647,29 @@ class DsbRegistration(db.Model):
         return True
 
     @staticmethod
-    def subscribe_ack_email_send_retry(cb, opaque):
+    def subscribe_email_send_retry(cb, opaque):
         DsbRegistration.email_send_retry_cb.append((cb, opaque))
         return True
 
+    def ret_dict(self):
+        flat = self.flat()
+        flat['date_of_birth'] = datetime_to_dutch_date_string(self.date_of_birth)
+        flat.update({'id': self.id, 'DT_RowId': self.id})
+        return flat
 
 
-    def flat(self, date_format=None):
+    def flat(self):
         return {
             'full_name': self.full_name(),
-            'timeslot': self.date_string(),
+            'timeslot': datetime_to_dutch_datetime_string(self.timeslot),
             'registration-first-name': self.first_name,
             'registration-last-name': self.last_name,
             'registration-email': self.email,
             'registration-date-of-birth': self.date_of_birth,
-            'registration-code': self.code
+            'registration-code': self.code,
+            'enabled': self.enabled,
+            'email_sent': self.email_sent,
+            'email-send-retry': self.email_send_retry
         }
 
 

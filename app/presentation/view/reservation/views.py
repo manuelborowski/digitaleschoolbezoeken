@@ -30,7 +30,6 @@ def table_ajax():
 @login_required
 @supervisor_required
 def table_action():
-    pass
     if button_pressed('edit'):
         return item_edit()
 
@@ -61,13 +60,13 @@ def reservation_save(form_data):
                 flash_plus('Kon de reservatie niet verwijderen', e)
         else:
             try:
-                ret = mreservation.add_or_update_registration(data, suppress_send_ack_email=True)
+                ret = mreservation.add_or_update_registration(data, send_ack_email=False)
                 if ret.result == ret.Result.E_NO_VISIT_SELECTED:
                     return render_template('end_user/messages.html', type='no-visit-selected')
                 if ret.result == ret.Result.E_GUEST_OK:
-                    return render_template('end_user/messages.html', type='register-guest-ok', info=ret.reservation)
+                    return render_template('end_user/messages.html', type='register-guest-ok', info=ret.registration)
                 if ret.result == ret.Result.E_NOT_ENOUGH_VISITS:
-                    return render_template('end_user/messages.html', type='not-enough-visits', info=ret.reservation)
+                    return render_template('end_user/messages.html', type='not-enough-visits', info=ret.registration)
                 return render_template('end_user/messages.html', type='could-not-register')
             except Exception as e:
                 flash_plus('Onbekende fout opgetreden', e)

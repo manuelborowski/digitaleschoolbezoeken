@@ -18,8 +18,12 @@ def dsb_register():
         current_url = re.sub(f'{request.url_rule.rule}.*', '', current_url)
         memail.set_base_url(current_url)
         code = request.args['code']
-        config_data = dsb_prepare_registration_form(code)
-        return render_template('end_user/register.html', config_data=config_data,
+        ret = dsb_prepare_registration_form(registration_code=code)
+        if ret.result == ret.Result.E_COULD_NOT_REGISTER:
+            return render_template('end_user/messages.html', type='could-not-register')
+        if ret.result == ret.Result.E_NO_REGISTRATION_FOUND:
+            return render_template('end_user/messages.html', type='dsb-no-registration-found', info=ret.registration)
+        return render_template('end_user/register.html', config_data=ret.registration,
                                registration_endpoint = 'end_user.dsb_register_save')
     except Exception as e:
         log.error(f'could not register {request.args}: {e}')
@@ -32,7 +36,7 @@ def dsb_register_save(form_data):
         data = json.loads(form_data)
         if data['cancel-reservation']:
             try:
-                mdsbregistration.delete_registration(data['registration-code'])
+                mdsbregistration.delete_registration(code=data['registration-code'])
                 return render_template('end_user/messages.html', type='cancel-ok')
             except Exception as e:
                 return render_template('end_user/messages.html', type='could-not-cancel', message=e)
@@ -40,11 +44,11 @@ def dsb_register_save(form_data):
             try:
                 ret = mdsbregistration.add_or_update_registration(data)
                 if ret.result == ret.Result.E_NO_TIMESLOT_SELECTED:
-                    return render_template('end_user/messages.html', type='dsb-no-timeslot-selected', info=ret.reservation)
+                    return render_template('end_user/messages.html', type='dsb-no-timeslot-selected', info=ret.registration)
                 if ret.result == ret.Result.E_TIMESLOT_ALREADY_SELECTED:
-                    return render_template('end_user/messages.html', type='dsb-timeslot-already-selected', info=ret.reservation)
+                    return render_template('end_user/messages.html', type='dsb-timeslot-already-selected', info=ret.registration)
                 if ret.result == ret.Result.E_OK:
-                    return render_template('end_user/messages.html', type='dsb-register-ok', info=ret.reservation)
+                    return render_template('end_user/messages.html', type='dsb-register-ok', info=ret.registration)
             except Exception as e:
                 return render_template('end_user/messages.html', type='could-not-register', message=e)
             return render_template('end_user/messages.html', type='could-not-register')
@@ -82,16 +86,16 @@ def register_save(form_data):
             try:
                 ret = mreservation.add_or_update_registration(data)
                 if ret.result == ret.Result.E_NO_VISIT_SELECTED:
-                    return render_template('end_user/messages.html', type='no-visit-selected', info=ret.reservation)
+                    return render_template('end_user/messages.html', type='no-visit-selected', info=ret.registration)
                 if ret.result == ret.Result.E_NOT_ENOUGH_VISITS:
-                    return render_template('end_user/messages.html', type='not-enough-visits', info=ret.reservation)
+                    return render_template('end_user/messages.html', type='not-enough-visits', info=ret.registration)
                 if ret.result == ret.Result.E_GUEST_OK:
-                    return render_template('end_user/messages.html', type='register-guest-ok', info=ret.reservation)
+                    return render_template('end_user/messages.html', type='register-guest-ok', info=ret.registration)
 
                 if ret.result == ret.Result.E_NO_FLOOR_SELECTED:
-                    return render_template('end_user/messages.html', type='no-floor-selected', info=ret.reservation)
+                    return render_template('end_user/messages.html', type='no-floor-selected', info=ret.registration)
                 if ret.result == ret.Result.E_FLOOR_COWORKER_OK:
-                    return render_template('end_user/messages.html', type='register-floor-coworker-ok', info=ret.reservation)
+                    return render_template('end_user/messages.html', type='register-floor-coworker-ok', info=ret.registration)
 
             except Exception as e:
                 return render_template('end_user/messages.html', type='could-not-register', message=e)

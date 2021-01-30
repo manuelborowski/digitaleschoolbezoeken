@@ -124,6 +124,18 @@
                     </div>
                 {% endif %}
 
+                {% if type =='dsb-no-registration-found' %}
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Foutmelding!</h4>
+                        <h5>Onze excuses, er is geen registratie gevonden.</h5>
+                        <h5>Gelieve een nieuwe registratie te maken.</h5>
+                        <hr>
+                        <a class="btn btn-success btn-lg" type="submit"
+                           href="{{ url_for('end_user.dsb_register', code = info.code) }}">Registreren</a>
+                        </p>
+                    </div>
+                {% endif %}
+
                 {% if type =='no-visit-selected' %}
                     <div class="alert alert-danger" role="alert">
                         <h4 class="alert-heading">Foutmelding!</h4>
