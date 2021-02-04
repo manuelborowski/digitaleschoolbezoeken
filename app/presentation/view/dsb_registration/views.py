@@ -127,6 +127,7 @@ table_configuration = {
         {'name': 'Naam', 'data': 'full_name', 'order_by': DsbRegistration.first_name, 'orderable': True},
         {'name': 'E-mail', 'data': 'registration-email', 'order_by': DsbRegistration.email, 'orderable': True},
         {'name': 'Geboortedatum', 'data': 'date_of_birth', 'order_by': DsbRegistration.date_of_birth, 'orderable': True},
+        {'name': 'Teamsmeeting', 'data': 'meeting-url', },
         {'name': 'E-mail verzonden', 'data': 'email_sent', 'order_by': DsbRegistration.email_sent, 'orderable': True,
          'celltoggle': 'standard', 'width': '1%'},
         {'name': 'Actief', 'data': 'enabled', 'order_by': DsbRegistration.enabled, 'orderable': True,

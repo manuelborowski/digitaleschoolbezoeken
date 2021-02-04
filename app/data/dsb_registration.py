@@ -1,5 +1,5 @@
 from app import db, log
-from app.data import utils as mutils
+from app.data import utils as mutils, settings as msettings
 from app.data.models import DsbRegistration
 
 
@@ -147,9 +147,19 @@ def search_data(search_string):
 
 def format_data(db_list):
     out = []
+    meeting_url_even = msettings.get_configuration_setting('dsb-teams-meeting-url-even')
+    meeting_url_odd = msettings.get_configuration_setting('dsb-teams-meeting-url-odd')
+    html_meeting_url_even = f'<a href="{meeting_url_even}" target="_blank" >Hier klikken voor Teams meeting</a>'
+    html_meeting_url_odd = f'<a href="{meeting_url_odd}" target="_blank" >Hier klikken voor Teams meeting</a>'
     for i in db_list:
+        date_is_even = (int((i.timeslot.minute) / 10) % 2) == 0
+        if date_is_even:
+            meeting_url = html_meeting_url_even
+        else:
+            meeting_url = html_meeting_url_odd
         em = i.ret_dict()
         em['row_action'] = f"{i.id}"
+        em['meeting-url'] = meeting_url
         out.append(em)
     return out
 
