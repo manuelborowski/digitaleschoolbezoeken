@@ -1,10 +1,10 @@
 from . import dsb_registration
 from app import admin_required, log, supervisor_required
 from flask import redirect, url_for, request, render_template
-from flask_login import login_required
+from flask_login import login_required, current_user
 from app.presentation.view import base_multiple_items
 from app.data import dsb_registration as mddsb_registration
-from app.application import dsb_registration as mdsb_registration, settings as msettings, socketio as msocketio
+from app.application import dsb_registration as mdsb_registration, socketio as msocketio, tables as mtables
 from app.data.models import SchoolReservation, AvailablePeriod, DsbRegistration
 from app.presentation.layout.utils import flash_plus, button_pressed
 from app.presentation.view import update_available_periods, false, true, null, dsb_prepare_registration_form
@@ -14,16 +14,16 @@ import json
 
 @dsb_registration.route('/dsb_registration', methods=['POST', 'GET'])
 @login_required
-@supervisor_required
 def show():
-    return base_multiple_items.show(table_configuration)
+    if current_user.is_at_least_supervisor:
+        return base_multiple_items.show(table_configuration_at_least_supervisor)
+    return base_multiple_items.show(table_configuration_user)
 
 
 @dsb_registration.route('/dsb_registration/table_ajax', methods=['GET', 'POST'])
 @login_required
-@supervisor_required
 def table_ajax():
-    return base_multiple_items.ajax(table_configuration)
+    return base_multiple_items.ajax(table_configuration_user)
 
 
 @dsb_registration.route('/dsb_registration/table_action', methods=['GET', 'POST'])
@@ -48,7 +48,7 @@ def item_edit(done=False, id=-1):
             flash_plus('Sorry, geen registratie gevonden')
         if ret.result == ret.Result.E_OK:
             return render_template('end_user/register.html', config_data=ret.registration,
-                               registration_endpoint = 'dsb_registration.registration_save')
+                                   registration_endpoint='dsb_registration.registration_save')
     except Exception as e:
         flash_plus('Fout opgetreden', e)
         log.error(f'could not edit dsb_registration {request.args}: {e}')
@@ -63,7 +63,6 @@ def item_delete():
         log.error(f'Could not delete regisration: {e}')
         flash_plus(u'Kan de registraties niet verwijderen', e)
     return redirect(url_for('dsb_registration.show'))
-
 
 
 @dsb_registration.route('/registration_save/<string:form_data>', methods=['POST', 'GET'])
@@ -92,13 +91,14 @@ def registration_save(form_data):
 
 
 def update_registration_cb(msg, client_sid=None):
-    if msg['data']['column'] == 5: # mail sent column
+    if msg['data']['column'] == 6:  # mail sent column
         mdsb_registration.update_email_sent_by_id(msg['data']['id'], msg['data']['value'])
-    if msg['data']['column'] == 6: # enable send mail column
+    if msg['data']['column'] == 7:  # enable send mail column
         mdsb_registration.update_enable_by_id(msg['data']['id'], msg['data']['value'])
-    if msg['data']['column'] == 7: # update tx-retry column
+    if msg['data']['column'] == 8:  # update tx-retry column
         mdsb_registration.update_email_send_retry_by_id(msg['data']['id'], msg['data']['value'])
     # msocketio.send_to_room({'type': 'celledit-dsb-registration', 'data': {'status': True}}, client_sid)
+
 
 msocketio.subscribe_on_type('celledit-dsb-registration', update_registration_cb)
 
@@ -111,14 +111,10 @@ mdsb_registration.subscribe_email_sent(ack_email_sent_cb, None)
 mdsb_registration.subscribe_email_send_retry(ack_email_sent_cb, None)
 mdsb_registration.subscribe_enabled(ack_email_sent_cb, None)
 
-
-
-table_configuration = {
+table_configuration_user = {
     'view': 'dsb_registration',
     'title': 'Registraties',
-    'buttons': [
-        'edit', 'delete'
-    ],
+    'buttons': [ ],
     'delete_message': u'Wilt u deze registratie(s) verwijderen?',
     'template': [
         {'name': 'row_action', 'data': 'row_action', 'width': '2%'},
@@ -126,13 +122,9 @@ table_configuration = {
         {'name': 'Tijdslot', 'data': 'timeslot', 'order_by': DsbRegistration.timeslot, 'orderable': True},
         {'name': 'Naam', 'data': 'full_name', 'order_by': DsbRegistration.first_name, 'orderable': True},
         {'name': 'E-mail', 'data': 'registration-email', 'order_by': DsbRegistration.email, 'orderable': True},
-        {'name': 'Geboortedatum', 'data': 'date_of_birth', 'order_by': DsbRegistration.date_of_birth, 'orderable': True},
+        {'name': 'Geboortedatum', 'data': 'date_of_birth', 'order_by': DsbRegistration.date_of_birth,
+         'orderable': True},
         {'name': 'Teamsmeeting', 'data': 'meeting-url', },
-        {'name': 'E-mail verzonden', 'data': 'email_sent', 'order_by': DsbRegistration.email_sent, 'orderable': True,
-         'celltoggle': 'standard', 'width': '1%'},
-        {'name': 'Actief', 'data': 'enabled', 'order_by': DsbRegistration.enabled, 'orderable': True,
-         'celltoggle': 'standard', 'width': '1%'},
-        {'name': 'Tx-retry', 'data': 'email-send-retry', 'order_by': DsbRegistration.email_send_retry, 'orderable': True, 'celledit': 'text',  'width': '1%'},
     ],
     'filter': [],
     'item': {
@@ -150,3 +142,18 @@ table_configuration = {
     # 'suppress_dom': True,
 
 }
+
+table_configuration_at_least_supervisor_update = {
+    'buttons' : ['edit', 'delete'],
+    'template': [
+        {'name': 'E-mail verzonden', 'data': 'email_sent', 'order_by': DsbRegistration.email_sent, 'orderable': True,
+         'celltoggle': 'standard', 'width': '1%'},
+        {'name': 'Actief', 'data': 'enabled', 'order_by': DsbRegistration.enabled, 'orderable': True,
+         'celltoggle': 'standard', 'width': '1%'},
+        {'name': 'Tx-retry', 'data': 'email-send-retry', 'order_by': DsbRegistration.email_send_retry,
+         'orderable': True,
+         'celledit': 'text', 'width': '1%'},
+    ]
+}
+
+table_configuration_at_least_supervisor =  mtables.table_configuration_deep_copy_and_update(table_configuration_user, table_configuration_at_least_supervisor_update)

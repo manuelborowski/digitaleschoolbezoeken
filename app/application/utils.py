@@ -1,5 +1,5 @@
 from app.data import utils as mutils, settings as msettings, models as mmodels
-import datetime, babel, random, string
+import datetime, babel, random, string, copy
 
 
 def return_common_info():
@@ -34,6 +34,5 @@ def raise_error(message, details=None):
 
 def create_random_string(len=32):
     return ''.join(random.choice(string.ascii_letters + string.digits) for i in range(len))
-
 
 

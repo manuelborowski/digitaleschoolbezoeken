@@ -62,6 +62,7 @@ def deepcopy(table):
     return out
 
 
+
 # prepare the configuration table to be used in the html front end, i.e. remove unwanted members (function calls, ...)
 def prepare_config_table_for_view(table):
     try:
@@ -96,3 +97,8 @@ def prepare_item_config_for_view(table, action):
     return item_config
 
 
+def table_configuration_deep_copy_and_update(original, update):
+    deep_copy = deepcopy(original)
+    for k, v in update.items():
+        deep_copy[k] += v
+    return deep_copy
