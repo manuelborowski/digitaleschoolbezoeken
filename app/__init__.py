@@ -26,10 +26,11 @@ flask_app = Flask(__name__, instance_relative_config=True, template_folder='pres
 # V0.10 : overview registrations: add teams url
 # V0.11 : registration overview : made if more clear for different levels
 # V0.12: added new timeslots
+# V0.13: removed timeslots
 
 @flask_app.context_processor
 def inject_version():
-    return dict(version='V0.12')
+    return dict(version='V0.13')
 
 #enable logging
 LOG_HANDLE = 'DSB'
