@@ -38,3 +38,9 @@ mdsb_timeslot.add_timeslot(datetime(2021, 4, 21, 13, 00), 10, 12, 'HEYL', 'LUYK'
 mdsb_timeslot.add_timeslot(datetime(2021, 4, 21, 15, 00), 10, 12, 'FEST', 'BOUW')
 mdsb_timeslot.add_timeslot(datetime(2021, 4, 22, 16, 30), 10, 12, 'VTENL', 'VWOE')
 
+mdsb_timeslot.add_timeslot(datetime(2021, 2, 10, 16, 00), 30, 3, 'BERV', 'BERV')
+mdsb_timeslot.add_timeslot(datetime(2021, 2, 11, 15, 00), 30, 6, 'BERV', 'BERV')
+mdsb_timeslot.add_timeslot(datetime(2021, 2, 12, 16, 00), 30, 4, 'BERV', 'BERV')
+mdsb_timeslot.add_timeslot(datetime(2021, 2, 15, 9, 00), 30, 7, 'BERV', 'BERV')
+mdsb_timeslot.add_timeslot(datetime(2021, 2, 17, 9, 30), 30, 6, 'BERV', 'BERV')
+mdsb_timeslot.add_timeslot(datetime(2021, 2, 18, 16, 00), 30, 4, 'BERV', 'BERV')
