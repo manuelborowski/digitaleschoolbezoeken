@@ -91,11 +91,11 @@ def registration_save(form_data):
 
 
 def update_registration_cb(msg, client_sid=None):
-    if msg['data']['column'] == 6:  # mail sent column
+    if msg['data']['column'] == 7:  # mail sent column
         mdsb_registration.update_email_sent_by_id(msg['data']['id'], msg['data']['value'])
-    if msg['data']['column'] == 7:  # enable send mail column
+    if msg['data']['column'] == 8:  # enable send mail column
         mdsb_registration.update_enable_by_id(msg['data']['id'], msg['data']['value'])
-    if msg['data']['column'] == 8:  # update tx-retry column
+    if msg['data']['column'] == 9:  # update tx-retry column
         mdsb_registration.update_email_send_retry_by_id(msg['data']['id'], msg['data']['value'])
     # msocketio.send_to_room({'type': 'celledit-dsb-registration', 'data': {'status': True}}, client_sid)
 

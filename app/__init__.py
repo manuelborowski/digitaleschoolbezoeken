@@ -28,10 +28,11 @@ flask_app = Flask(__name__, instance_relative_config=True, template_folder='pres
 # V0.12: added new timeslots
 # V0.13: removed timeslots
 # V0.14: added column id in registrations overview
+# V0.15: bugfix
 
 @flask_app.context_processor
 def inject_version():
-    return dict(version='V0.14')
+    return dict(version='V0.15')
 
 #enable logging
 LOG_HANDLE = 'DSB'
