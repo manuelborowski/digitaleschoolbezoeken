@@ -106,6 +106,7 @@ table_configuration = {
     'template': [
         {'name': 'row_action', 'data': 'row_action', 'width': '2%'},
 
+        {'name': 'Id', 'data': 'id', 'order_by': Visit.id, 'orderable': True},
         {'name': 'Tijdslot', 'data': 'timeslot', 'order_by': Visit.timeslot, 'orderable': True},
         {'name': 'Naam', 'data': 'full_name', 'order_by': EndUser.first_name, 'orderable': True},
         {'name': 'E-mail', 'data': 'end-user-email', 'order_by': EndUser.email, 'orderable': True},

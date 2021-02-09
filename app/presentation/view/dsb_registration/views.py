@@ -118,7 +118,7 @@ table_configuration_user = {
     'delete_message': u'Wilt u deze registratie(s) verwijderen?',
     'template': [
         {'name': 'row_action', 'data': 'row_action', 'width': '2%'},
-
+        {'name': 'Id', 'data': 'id', 'order_by': DsbRegistration.id, 'orderable': True},
         {'name': 'Tijdslot', 'data': 'timeslot', 'order_by': DsbRegistration.timeslot, 'orderable': True},
         {'name': 'Naam', 'data': 'full_name', 'order_by': DsbRegistration.first_name, 'orderable': True},
         {'name': 'E-mail', 'data': 'registration-email', 'order_by': DsbRegistration.email, 'orderable': True},
