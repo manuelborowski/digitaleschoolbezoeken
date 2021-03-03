@@ -7,6 +7,7 @@ import json, datetime
 def get_available_timeslots(selected_date=None):
     available_timeslots = []
     try:
+        now = datetime.datetime.now()
         selected_date_string = mutils.datetime_to_formiodate(selected_date) if selected_date else None
         configured_timeslot_bases = mdsb_timeslot.get_timeslots()
         all_registrations = mdsb_registration.get_registrations(enabled=True)
@@ -19,6 +20,7 @@ def get_available_timeslots(selected_date=None):
             for i in range(base.number):
                 configured_timeslot = base.date + datetime.timedelta(minutes=i * base.length)
                 if configured_timeslot in registration_cache: continue
+                if configured_timeslot < now: continue
                 date_string = mutils.datetime_to_dutch_date_string(configured_timeslot)
                 if date_label != date_string:
                     date_label = date_string
